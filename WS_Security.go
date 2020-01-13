@@ -77,6 +77,31 @@ func NewSecurity(username, passwd string) security {
 	return auth
 }
 
+func NewSecurityWithTime(username, passwd string, t time.Time) security {
+	/** Generating Nonce sequence **/
+	charsToGenerate := 32
+	charSet := gostrgen.Lower | gostrgen.Digit
+
+	nowUTC := t
+	nonceSeq, _ := gostrgen.RandGen(charsToGenerate, charSet, "", "")
+	auth := security{
+		Auth:wsAuth{
+			Username:username,
+			Password:password {
+				Type:passwordType,
+				Password:generateToken(username, nonceSeq, nowUTC, passwd),
+			},
+			Nonce:nonce {
+				Type:encodingType,
+				Nonce: nonceSeq,
+			},
+			Created: nowUTC.Format(time.RFC3339Nano),
+		},
+	}
+
+	return auth
+}
+
 //Digest = B64ENCODE( SHA1( B64DECODE( Nonce ) + Date + Password ) )
 func generateToken(Username string, Nonce string, Created time.Time, Password string) string {
 

@@ -1,9 +1,10 @@
 package gosoap
 
 import (
+	"encoding/xml"
 	"github.com/beevik/etree"
 	"log"
-	"encoding/xml"
+	"time"
 )
 
 type SoapMessage string
@@ -257,6 +258,40 @@ func (msg *SoapMessage) AddWSSecurity(username, password string) {
 	/*
 	Adding WS-Security struct to SOAP header
 	 */
+	msg.AddStringHeaderContent(string(soapReq))
+
+	//doc.IndentTabs()
+	//res, _ := doc.WriteToString()
+	//
+	//*msg = SoapMessage(res)
+}
+
+func (msg *SoapMessage) AddWSSecurityWithTime(username, password string, t time.Time) {
+	//doc := etree.NewDocument()
+	//if err := doc.ReadFromString(msg.String()); err != nil {
+	//	log.Println(err.Error())
+	//}
+
+	/*
+		Getting an WS-Security struct representation
+	*/
+	auth := NewSecurityWithTime(username, password, t)
+
+	/*
+		Adding WS-Security namespaces to root element of SOAP message
+	*/
+	//msg.AddRootNamespace("wsse", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext1.0.xsd")
+	//msg.AddRootNamespace("wsu", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility1.0.xsd")
+
+	soapReq, err := xml.MarshalIndent(auth, "", "  ")
+	if err != nil {
+		//log.Printf("error: %v\n", err.Error())
+		panic(err)
+	}
+
+	/*
+		Adding WS-Security struct to SOAP header
+	*/
 	msg.AddStringHeaderContent(string(soapReq))
 
 	//doc.IndentTabs()
