@@ -57,19 +57,20 @@ func NewSecurity(username, passwd string) security {
 	charsToGenerate := 32
 	charSet := gostrgen.Lower | gostrgen.Digit
 
+	nowUTC := time.Now().UTC()
 	nonceSeq, _ := gostrgen.RandGen(charsToGenerate, charSet, "", "")
 	auth := security{
 		Auth:wsAuth{
 			Username:username,
 			Password:password {
 				Type:passwordType,
-				Password:generateToken(username, nonceSeq, time.Now().UTC(), passwd),
+				Password:generateToken(username, nonceSeq, nowUTC, passwd),
 			},
 			Nonce:nonce {
 				Type:encodingType,
 				Nonce: nonceSeq,
 			},
-			Created: time.Now().UTC().Format(time.RFC3339Nano),
+			Created: nowUTC.Format(time.RFC3339Nano),
 		},
 	}
 
